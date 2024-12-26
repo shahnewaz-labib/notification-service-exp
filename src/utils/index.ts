@@ -1,20 +1,27 @@
-import { backoffConfig, emailProviders, smsProviders, Task } from "../config";
+import { backoffConfig, emailProviders, smsProviders } from "../config";
 
-export async function exponentialBackoff(fn: Function, task: Task) {
+export async function exponentialBackoff<T>(
+	action: () => Promise<T>,
+) {
 	let delay = backoffConfig.initialDelay;
+	let jitter = backoffConfig.maxJitter;
+	let multiplier = backoffConfig.multiplier;
+	let retries = backoffConfig.retries;
 
-	for (let attempt = 1; attempt <= backoffConfig.retries; attempt++) {
+	for (let attempt = 1; attempt <= retries; attempt++) {
 		try {
-			return await fn();
+			return await action();
 		} catch (error) {
 			if (attempt === backoffConfig.retries) {
-				console.error(`${task.id} Att ${attempt} f. No more retries.`);
+				console.error(`f. No more R.`);
 				throw error;
 			}
-			console.error(`${task.id} Att ${attempt} failed. R ${delay} ms...`);
+			console.error(`R in ${delay} ms`);
+
 			await new Promise((resolve) => setTimeout(resolve, delay));
-			const jitter = delay * backoffConfig.maxJitter * (Math.random() - 0.5) * 2;
-			delay = delay * backoffConfig.multiplier + jitter;
+
+			jitter = delay * jitter * (Math.random() - 0.5) * 2;
+			delay = delay * multiplier + jitter;
 		}
 	}
 }

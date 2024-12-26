@@ -14,7 +14,7 @@ export const taskProcessingQueue = queue(async (task: Task) => {
 		try {
 			await exponentialBackoff(async () => {
 				await axios.post(provider, task.data);
-			}, task);
+			});
 			return;
 		} catch (error) {
 			console.error(`Q: F ${task.id} -> ${provider.split("/").pop()}`);
@@ -34,7 +34,7 @@ export const deadLetterProcessingQueue = queue(async (task: Task) => {
 		try {
 			await exponentialBackoff(async () => {
 				await axios.post(provider, task.data);
-			}, task);
+			});
 			return;
 		} catch (error) {
 			console.error(`DLQ: Failed to send ${task.type} via ${provider}`);
