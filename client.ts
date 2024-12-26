@@ -1,16 +1,11 @@
 import axios from "axios";
 import express from "express";
 import { queue } from 'async';
-import { Task } from "./config";
+import { queueConfig, Task } from "./config";
 import { smsProviders, emailProviders, exponentialBackoff } from "./config";
 
 let taskQueue: Task[] = [];
 let deadLetterQueue: Task[] = [];
-
-const TASK_QUEUE_INTERVAL = 100;
-const DEAD_LETTER_QUEUE_INTERVAL = 5000;
-const TASK_QUEUE_LIMIT = 100;
-const DEAD_LETTER_QUEUE_LIMIT = 50;
 
 function getShuffledProviders(type: "sms" | "email") {
 	let shuffledProviders = type === "sms" ? smsProviders : emailProviders;
@@ -24,13 +19,13 @@ function getShuffledProviders(type: "sms" | "email") {
 async function processTaskQueue() {
 	while (true) {
 		if (taskQueue.length === 0) {
-			await new Promise((resolve) => setTimeout(resolve, TASK_QUEUE_INTERVAL));
+			await new Promise((resolve) => setTimeout(resolve, queueConfig.taskQueueInterval));
 			continue;
 		}
 
 		while (
 			taskQueue.length > 0 &&
-			taskProcessingQueue.running() < TASK_QUEUE_LIMIT
+			taskProcessingQueue.running() < queueConfig.taskQueueLimit
 		) {
 			const task = taskQueue.shift();
 			if (task) {
@@ -45,13 +40,13 @@ async function processTaskQueue() {
 async function processDeadLetterQueue() {
 	while (true) {
 		if (deadLetterQueue.length === 0) {
-			await new Promise((resolve) => setTimeout(resolve, DEAD_LETTER_QUEUE_INTERVAL));
+			await new Promise((resolve) => setTimeout(resolve, queueConfig.deadLetterQueueInterval));
 			continue;
 		}
 
 		while (
 			deadLetterQueue.length > 0 &&
-			deadLetterProcessingQueue.running() < DEAD_LETTER_QUEUE_LIMIT
+			deadLetterProcessingQueue.running() < queueConfig.deadLetterQueueLimit
 		) {
 			const task = deadLetterQueue.shift();
 			if (task) {
@@ -81,7 +76,7 @@ const taskProcessingQueue = queue(async (task: Task) => {
 			}
 		}
 	}
-}, TASK_QUEUE_LIMIT);
+}, queueConfig.taskQueueLimit);
 
 const deadLetterProcessingQueue = queue(async (task: Task) => {
 	const shuffledProviders = getShuffledProviders(task.type);
@@ -101,7 +96,7 @@ const deadLetterProcessingQueue = queue(async (task: Task) => {
 			}
 		}
 	}
-}, DEAD_LETTER_QUEUE_LIMIT);
+}, queueConfig.deadLetterQueueLimit);
 
 // EXPRESS APP
 const app = express();
@@ -140,8 +135,8 @@ function logState() {
 	console.log(`Active Tasks        : ${taskProcessingQueue.running()}`);
 	console.log(`Dead Letter Q Size  : ${deadLetterQueue.length}`);
 	console.log(`Active DLQ Tasks    : ${deadLetterProcessingQueue.running()}`);
-	console.log(`Task Queue Capacity : ${TASK_QUEUE_LIMIT - taskProcessingQueue.running()}`);
-	console.log(`DLQ Capacity        : ${DEAD_LETTER_QUEUE_LIMIT - deadLetterProcessingQueue.running()}`);
+	console.log(`Task Queue Capacity : ${queueConfig.taskQueueLimit - taskProcessingQueue.running()}`);
+	console.log(`DLQ Capacity        : ${queueConfig.deadLetterQueueLimit - deadLetterProcessingQueue.running()}`);
 	console.log(`==========================`);
 }
 

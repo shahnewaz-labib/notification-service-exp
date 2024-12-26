@@ -14,6 +14,26 @@ export const emailProviders: string[] = [
 	"http://localhost:8093/api/email/provider3"
 ]
 
+export interface Task {
+	id: number;
+	type: "sms" | "email";
+	data: {
+		phone: string;
+		text: string;
+	} | {
+		subject: string;
+		body: string;
+		recipients: string[];
+	};
+}
+
+export const queueConfig = {
+	taskQueueInterval: 100,
+	deadLetterQueueInterval: 1000,
+	taskQueueLimit: 100,
+	deadLetterQueueLimit: 100,
+}
+
 export const backoffConfig = {
 	initialDelay: 500,
 	multiplier: 1.5,
@@ -40,15 +60,3 @@ export async function exponentialBackoff(fn: Function, task: Task) {
 	}
 }
 
-export interface Task {
-	id: number;
-	type: "sms" | "email";
-	data: {
-		phone: string;
-		text: string;
-	} | {
-		subject: string;
-		body: string;
-		recipients: string[];
-	};
-}
