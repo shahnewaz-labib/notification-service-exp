@@ -4,7 +4,7 @@ export async function exponentialBackoff<T>(
 	action: () => Promise<T>,
 ) {
 	let delay = backoffConfig.initialDelay;
-	let jitter = backoffConfig.maxJitter;
+	let maxJitter = backoffConfig.maxJitter;
 	let multiplier = backoffConfig.multiplier;
 	let retries = backoffConfig.retries;
 
@@ -16,14 +16,13 @@ export async function exponentialBackoff<T>(
 				console.error(`f. No more R.`);
 				throw error;
 			}
-			console.error(`R in ${delay} ms`);
-
+			console.error(`R ${delay} ms...`);
 			await new Promise((resolve) => setTimeout(resolve, delay));
-
-			jitter = delay * jitter * (Math.random() - 0.5) * 2;
+			const jitter = delay * maxJitter * (Math.random() - 0.5) * 2;
 			delay = delay * multiplier + jitter;
 		}
 	}
+
 }
 
 export function getShuffledProviders(type: "sms" | "email") {
