@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Project Options */
-    "incremental": true,                              /* Enable incremental compilation for faster builds. */
+    "incremental": false,                              /* Enable incremental compilation for faster builds. */
     
     /* Language and Environment */
     "target": "es2020",                               /* Set the JavaScript language version. */

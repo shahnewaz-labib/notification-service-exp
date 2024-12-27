@@ -3,7 +3,8 @@ import { smsService } from "../services/smsService";
 
 export const smsController = {
 	sendSms: (req: Request, res: Response) => {
-		const { phone, text } = req.body;
+		const { phone, text } = req.body.data;
+
 		if (!phone || !text) {
 			return res.status(400).json({ error: "Invalid input" });
 		}
