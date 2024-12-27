@@ -16,7 +16,8 @@
     "async": "^3.2.6",
     "axios": "^1.7.9",
     "express": "^4.21.2",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.3",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@siddiqus/expressive": "^4.0.17",
