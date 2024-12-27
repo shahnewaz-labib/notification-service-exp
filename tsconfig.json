@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    /* Project Options */
+    "incremental": true,                              /* Enable incremental compilation for faster builds. */
+    
+    /* Language and Environment */
+    "target": "es2020",                               /* Set the JavaScript language version. */
+    "lib": ["es2020"],                                /* Include library files for ES2020 features. */
+
+    /* Modules */
+    "module": "commonjs",                             /* Use CommonJS module system (Node.js compatible). */
+    "rootDir": "./src",                               /* Specify the root directory for input files. */
+    "outDir": "./.dist",                              /* Output compiled files to .dist folder. */
+    "esModuleInterop": true,                          /* Ensure compatibility with CommonJS modules. */
+    "forceConsistentCasingInFileNames": true,         /* Enforce consistent casing in file names. */
+
+    /* Type Checking */
+    "strict": true,                                   /* Enable all strict type-checking options. */
+    "skipLibCheck": true,                             /* Skip type-checking declaration files. */
+
+    /* Type Definitions */
+    "types": [],
+    "typeRoots": ["./node_modules/@types"]            /* Only look for types in the @types folder. */
+  },
+  "include": ["src/**/*"],                            /* Include all files in the src folder. */
+  "exclude": ["node_modules", "**/*.js", "*.json"]    /* Exclude node_modules, JavaScript, and JSON files. */
+}
