@@ -23,3 +23,6 @@ export const backoffConfig = {
 	maxJitter: 0.5,
 	retries: 5,
 };
+
+export const port = process.env.PORT || 3000;
+

@@ -1,4 +1,4 @@
-import { taskQueue } from "../taskQueue";
+import { taskQueue } from "../tasks/taskQueue";
 import { Task } from "../types/task";
 
 import { v4 as uuidv4 } from "uuid";

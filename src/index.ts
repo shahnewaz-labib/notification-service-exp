@@ -1,7 +1,9 @@
-import { logState, processDeadLetterQueue, processTaskQueue } from "./taskQueue";
 import app from "./app";
+import { port } from "./config";
+import { processDeadLetterQueue } from "./tasks/deadLetterQueue";
+import { processTaskQueue } from "./tasks/taskQueue";
+import { logState } from "./tasks/utils";
 
-const port = process.env.PORT || 3000;
 app.listen(port, () => {
 	console.log(`Service API running on port ${port}`);
 });
