@@ -109,8 +109,6 @@ for (let index = 1; index < 4; index++) {
 	registerApi(smsApp, "sms", index);
 	registerApi(emailApp, "email", index);
 
-	// console log the endpoint full path
-
 	smsApp.listen(smsPort, () => {
 		console.log(`SMS Provider ${index} running on port ${smsPort}`);
 	});

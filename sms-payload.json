@@ -1,0 +1,7 @@
+{
+  "type": "sms",
+  "data": {
+    "phone": "+8801700000000",
+    "text": "this is a text"
+  }
+}
