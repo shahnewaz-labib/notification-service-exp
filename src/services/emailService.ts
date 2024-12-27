@@ -1,12 +1,15 @@
-import { Task } from "../config";
 import { taskQueue } from "../taskQueue";
+import { Task } from "../types/task";
 
-let id = 0;
+import { v4 as uuidv4 } from "uuid";
 
 export const emailService = {
 	enqueueEmail: (subject: string, body: string, recipients: string[]) => {
-		const task: Task = { id: id++, type: "email", data: { subject, body, recipients } };
+		const id = uuidv4();
+		const task: Task = { id: id, type: "email", data: { subject, body, recipients } };
+
 		taskQueue.push(task);
+
 		return task.id;
 	},
 };

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { queue } from "async";
-import { queueConfig, Task } from "./config";
+import { queueConfig } from "./config";
 import { exponentialBackoff, getShuffledProviders } from "./utils";
+import { Task } from "./types/task";
 
 export let taskQueue: Task[] = [];
 export let deadLetterQueue: Task[] = [];

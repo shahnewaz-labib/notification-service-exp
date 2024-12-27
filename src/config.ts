@@ -10,19 +10,6 @@ export const emailProviders: string[] = [
 	"http://localhost:8093/api/email/provider3"
 ]
 
-export interface Task {
-	id: number;
-	type: "sms" | "email";
-	data: {
-		phone: string;
-		text: string;
-	} | {
-		subject: string;
-		body: string;
-		recipients: string[];
-	};
-}
-
 export const queueConfig = {
 	taskQueueInterval: 100,
 	deadLetterQueueInterval: 1000,
