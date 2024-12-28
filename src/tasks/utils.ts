@@ -1,21 +1,20 @@
 import axios from "axios";
-import { exponentialBackoff, getShuffledProviders } from "../utils";
+import { getShuffledProviders } from "../utils";
 import { taskProcessingQueue, taskQueue } from "./taskQueue";
 import { deadLetterProcessingQueue, deadLetterQueue } from "./deadLetterQueue";
 import { Task } from "../types/task";
 import { queueConfig } from "../config";
+import { Provider } from "../types/provider";
 
 export async function processTask(task: Task) {
-	const shuffledProviders = getShuffledProviders(task.type);
+	const shuffledProviders: Provider[] = getShuffledProviders(task.type);
 
 	for (const [index, provider] of shuffledProviders.entries()) {
 		try {
-			await exponentialBackoff(async () => {
-				await axios.post(provider, task.data);
-			});
+			await provider.consume(task.data);
 			return;
 		} catch (error) {
-			console.error(`Failed to process task ${task.id} with provider ${provider.split("/").pop()}`);
+			console.error(`Failed to process task ${task.id} with provider ${provider.name}`);
 
 			if (index === shuffledProviders.length - 1) {
 				console.error("All providers failed, moving task to dead letter queue");
