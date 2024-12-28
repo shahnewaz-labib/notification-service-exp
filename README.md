@@ -3,10 +3,7 @@
 ### Run Instructions
 
 ```bash
-yarn add express
-yarn add dotenv -D
-npx tsx server.ts
-npx tsx client.ts
+yarn dev
 ```
 
 ### Stress test with vegeta
