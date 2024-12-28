@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getShuffledProviders } from "../utils";
 import { taskProcessingQueue, taskQueue } from "./taskQueue";
 import { deadLetterProcessingQueue, deadLetterQueue } from "./deadLetterQueue";
