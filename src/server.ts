@@ -3,6 +3,7 @@ import express, { Request, Response, Express } from "express";
 import dotenv from "dotenv";
 
 dotenv.config();
+console.log("asdadsadsasdasdasd")
 
 const randomFail = () => {
 	if (Math.random() < 0.5) {
