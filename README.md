@@ -95,18 +95,6 @@ flowchart TB
     classDef queue fill:#B8860B
     classDef error fill:#FF6347
     classDef utility fill:#87CEFA
-
-    %% Legend
-    subgraph Legend
-        L1["API Component"]:::api
-        L2["Middleware"]:::middleware
-        L3["Controller"]:::controller
-        L4["Service"]:::service
-        L5["Provider"]:::provider
-        L6["Queue"]:::queue
-        L7["Error Handler"]:::error
-        L8["Utility"]:::utility
-    end
 ```
 
 ### Run Instructions
