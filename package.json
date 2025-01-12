@@ -9,7 +9,8 @@
     "start:server": "node .dist/server.js",
     "dev:client": "concurrently \"yarn build:watch\" \"nodemon .dist/index.js\"",
     "dev:server": "concurrently \"yarn build:watch\" \"nodemon .dist/server.js\"",
-    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\""
+    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\"",
+    "format": "prettier --write '**/*.{ts,js}'"
   },
   "dependencies": {
     "async": "^3.2.6",

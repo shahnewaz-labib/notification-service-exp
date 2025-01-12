@@ -1,14 +1,12 @@
-import { Provider } from "../../types/provider";
-import { ExponentialBackoffStrategy } from "../../utils/retryStrategies";
-import { sendWithRetry } from "../../utils/sendWithRetry";
+import axios from 'axios';
+import { Provider } from '../../types/provider';
 
 export const providerC: Provider = {
-  url: "http://localhost:8093/api/email/provider3",
-  name: "Provider C",
+  url: 'http://localhost:8093/api/email/provider3',
+  name: 'Provider C',
   consume: async (data: any) => {
     console.log(`Provider C: ${data}`);
 
-    const strategy = new ExponentialBackoffStrategy();
-    await sendWithRetry(providerC.url, data, strategy);
-  }
-}
+    await axios.post(providerC.url, data);
+  },
+};
