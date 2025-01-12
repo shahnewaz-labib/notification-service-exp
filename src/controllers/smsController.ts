@@ -6,7 +6,8 @@ export const smsController = {
 		const { phone, text } = req.body.data;
 
 		if (!phone || !text) {
-			return res.status(400).json({ error: "Invalid input" });
+			res.status(400).json({ error: "Invalid input" });
+			return;
 		}
 
 		const taskId = smsService.enqueueSms(phone, text);
