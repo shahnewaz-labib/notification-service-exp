@@ -10,4 +10,3 @@ export function getShuffledProviders(type: "sms" | "email"): Provider[] {
 	}
 	return providers;
 }
-

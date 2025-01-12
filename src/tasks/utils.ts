@@ -7,6 +7,7 @@ import { Provider } from "../types/provider";
 
 export async function processTask(task: Task) {
 	const shuffledProviders: Provider[] = getShuffledProviders(task.type);
+	shuffledProviders.map(provider => console.log(provider.name));
 
 	for (const [index, provider] of shuffledProviders.entries()) {
 		try {
@@ -22,6 +23,26 @@ export async function processTask(task: Task) {
 		}
 	}
 }
+
+export async function dlqProcessTask(task: Task) {
+	const shuffledProviders: Provider[] = getShuffledProviders(task.type);
+	shuffledProviders.map(provider => console.log(provider.name));
+
+	for (const [index, provider] of shuffledProviders.entries()) {
+		try {
+			await provider.consume(task.data);
+			return;
+		} catch (error) {
+			console.error(`[DLQ] Failed to process task ${task.id} with provider ${provider.name}`);
+
+			if (index === shuffledProviders.length - 1) {
+				console.error("[DLQ] All providers failed, moving task to dead letter queue");
+				deadLetterQueue.push(task);
+			}
+		}
+	}
+}
+
 
 export function logState() {
 	const totalIncomingTasks =

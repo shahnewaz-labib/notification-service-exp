@@ -9,11 +9,6 @@ export const taskProcessingQueue = queue(processTask, queueConfig.taskQueueLimit
 
 export async function processTaskQueue() {
 	while (true) {
-		if (taskQueue.length === 0) {
-			await new Promise((resolve) => setTimeout(resolve, queueConfig.taskQueueInterval));
-			continue;
-		}
-
 		while (
 			taskQueue.length > 0 &&
 			taskProcessingQueue.running() < queueConfig.taskQueueLimit
@@ -24,7 +19,7 @@ export async function processTaskQueue() {
 			}
 		}
 
-		await new Promise((resolve) => setTimeout(resolve, 100));
+		await new Promise((resolve) => setTimeout(resolve, queueConfig.taskQueueInterval));
 	}
 }
 

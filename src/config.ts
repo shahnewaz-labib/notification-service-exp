@@ -1,6 +1,6 @@
 export const queueConfig = {
 	taskQueueInterval: 100,
-	deadLetterQueueInterval: 1000,
+	deadLetterQueueInterval: 10000,
 	taskQueueLimit: 100,
 	deadLetterQueueLimit: 100,
 }
