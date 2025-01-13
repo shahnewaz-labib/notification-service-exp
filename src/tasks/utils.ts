@@ -7,9 +7,10 @@ import { Provider } from '../types/provider';
 import { CircuitBreaker } from '../utils/circuitBreaker';
 
 const circuitBreaker = new CircuitBreaker({
-  failurePercentageThreshold: 80,
-  successPercentageThreshold: 60,
-  halfOpenTimeout: 5000,
+  failureThresholdPercentage: 80,
+  successThresholdPercentage: 60,
+  halfOpenThresholdPercentage: 50,
+  halfOpenTimeout: 5000
 });
 
 export async function processTask(task: Task) {
