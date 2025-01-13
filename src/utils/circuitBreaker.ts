@@ -1,27 +1,27 @@
 interface CircuitBreakerConfig {
-  failureThreshold: number;
-  successThreshold: number;
-  timeout: number;
+  failurePercentageThreshold: number;
+  successPercentageThreshold: number;
   halfOpenTimeout: number;
 }
 
 export class CircuitBreaker {
-  private failureThreshold: number;
-  private successThreshold: number;
+  private failurePercentageThreshold: number;
+  private successPercentageThreshold: number;
   private halfOpenTimeout: number;
   private state: Map<
     string,
     {
       failureCount: number;
       successCount: number;
+      attemptCount: number;
       state: 'closed' | 'open' | 'half-open';
       lastFailureTime?: number;
     }
   >;
 
   constructor(config: CircuitBreakerConfig) {
-    this.failureThreshold = config.failureThreshold;
-    this.successThreshold = config.successThreshold;
+    this.failurePercentageThreshold = config.failurePercentageThreshold;
+    this.successPercentageThreshold = config.successPercentageThreshold;
     this.halfOpenTimeout = config.halfOpenTimeout;
     this.state = new Map();
   }
@@ -30,12 +30,11 @@ export class CircuitBreaker {
     const providerState = this.state.get(providerName) || {
       failureCount: 0,
       successCount: 0,
+      attemptCount: 0,
       state: 'closed',
     };
     providerState.state = 'open';
-
     this.state.set(providerName, providerState);
-
     console.log(`[CBP] Circuit is open for provider: ${providerName}`);
   }
 
@@ -46,9 +45,9 @@ export class CircuitBreaker {
     providerState.state = 'closed';
     providerState.failureCount = 0;
     providerState.successCount = 0;
+    providerState.attemptCount = 0;
 
     this.state.set(providerName, providerState);
-
     console.log(`[CBP] Circuit is reset(closed) for provider: ${providerName}`);
   }
 
@@ -58,9 +57,9 @@ export class CircuitBreaker {
 
     providerState.state = 'half-open';
     providerState.successCount = 0;
+    providerState.attemptCount = 0;
 
     this.state.set(providerName, providerState);
-
     console.log(`[CBP] Circuit is half-open for provider: ${providerName}`);
   }
 
@@ -68,11 +67,16 @@ export class CircuitBreaker {
     const providerState = this.state.get(providerName) || {
       failureCount: 0,
       successCount: 0,
+      attemptCount: 0,
       state: 'closed',
     };
     providerState.successCount++;
+    providerState.attemptCount++;
 
-    if (providerState?.successCount >= this.successThreshold) {
+    const successPercentage =
+      (providerState.successCount / providerState.attemptCount) * 100;
+
+    if (successPercentage >= this.successPercentageThreshold) {
       this.reset(providerName);
     }
     this.state.set(providerName, providerState);
@@ -84,12 +88,17 @@ export class CircuitBreaker {
     const providerState = this.state.get(providerName) || {
       failureCount: 0,
       successCount: 0,
+      attemptCount: 0,
       state: 'closed',
       lastFailureTime: Date.now(),
     };
     providerState.failureCount++;
+    providerState.attemptCount++;
 
-    if (providerState?.failureCount >= this.failureThreshold) {
+    const failurePercentage =
+      (providerState.failureCount / providerState.attemptCount) * 100;
+
+    if (failurePercentage >= this.failurePercentageThreshold) {
       this.open(providerName);
       providerState.lastFailureTime = Date.now();
     }
@@ -105,6 +114,7 @@ export class CircuitBreaker {
     const providerState = this.state.get(providerName) || {
       failureCount: 0,
       successCount: 0,
+      attemptCount: 0,
       state: 'closed',
     };
 
