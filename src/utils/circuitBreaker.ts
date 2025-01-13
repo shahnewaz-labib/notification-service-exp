@@ -33,31 +33,35 @@ export class CircuitBreaker {
       state: 'closed',
     };
     providerState.state = 'open';
+
     this.state.set(providerName, providerState);
+
     console.log(`[CBP] Circuit is open for provider: ${providerName}`);
   }
 
   private reset(providerName: string) {
     const providerState = this.state.get(providerName);
-    if (providerState) {
-      providerState.state = 'closed';
-      providerState.failureCount = 0;
-      providerState.successCount = 0;
-      this.state.set(providerName, providerState);
-      console.log(
-        `[CBP] Circuit is reset(closed) for provider: ${providerName}`,
-      );
-    }
+    if (!providerState) return;
+
+    providerState.state = 'closed';
+    providerState.failureCount = 0;
+    providerState.successCount = 0;
+
+    this.state.set(providerName, providerState);
+
+    console.log(`[CBP] Circuit is reset(closed) for provider: ${providerName}`);
   }
 
   private halfOpen(providerName: string) {
     const providerState = this.state.get(providerName);
-    if (providerState) {
-      providerState.state = 'half-open';
-      providerState.successCount = 0;
-      this.state.set(providerName, providerState);
-      console.log(`[CBP] Circuit is half-open for provider: ${providerName}`);
-    }
+    if (!providerState) return;
+
+    providerState.state = 'half-open';
+    providerState.successCount = 0;
+
+    this.state.set(providerName, providerState);
+
+    console.log(`[CBP] Circuit is half-open for provider: ${providerName}`);
   }
 
   private onSuccess(providerName: string) {
@@ -72,6 +76,7 @@ export class CircuitBreaker {
       this.reset(providerName);
     }
     this.state.set(providerName, providerState);
+
     console.log('[CBP] Success!');
   }
 
@@ -89,6 +94,7 @@ export class CircuitBreaker {
       providerState.lastFailureTime = Date.now();
     }
     this.state.set(providerName, providerState);
+
     console.log('[CBP] Failure!');
   }
 
