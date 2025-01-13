@@ -7,9 +7,8 @@ import { Provider } from '../types/provider';
 import { CircuitBreaker } from '../utils/circuitBreaker';
 
 const circuitBreaker = new CircuitBreaker({
-  failureThreshold: 3,
-  successThreshold: 2,
-  timeout: 1000,
+  failurePercentageThreshold: 80,
+  successPercentageThreshold: 60,
   halfOpenTimeout: 5000,
 });
 
