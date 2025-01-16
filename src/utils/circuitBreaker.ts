@@ -31,11 +31,12 @@ export class CircuitBreaker {
   }
 
   private open(providerName: string) {
-    const providerState = this.state.get(providerName) || this.createInitialState();
+    const providerState =
+      this.state.get(providerName) || this.createInitialState();
     providerState.state = 'open';
     providerState.lastFailureTime = Date.now();
     providerState.maxHalfOpenRequests = Math.floor(
-      (providerState.attemptCount * this.halfOpenThresholdPercentage) / 100
+      (providerState.attemptCount * this.halfOpenThresholdPercentage) / 100,
     );
     this.state.set(providerName, providerState);
     console.log(`[CBP] Circuit is open for provider: ${providerName}`);
@@ -70,14 +71,18 @@ export class CircuitBreaker {
   }
 
   private onSuccess(providerName: string) {
-    const providerState = this.state.get(providerName) || this.createInitialState();
+    const providerState =
+      this.state.get(providerName) || this.createInitialState();
     providerState.successCount++;
     providerState.attemptCount++;
 
     if (providerState.state === 'half-open') {
       providerState.halfOpenRequestCount++;
-      if (providerState.halfOpenRequestCount >= providerState.maxHalfOpenRequests) {
-        const successPercentage = (providerState.successCount / providerState.attemptCount) * 100;
+      if (
+        providerState.halfOpenRequestCount >= providerState.maxHalfOpenRequests
+      ) {
+        const successPercentage =
+          (providerState.successCount / providerState.attemptCount) * 100;
         if (successPercentage >= this.successThresholdPercentage) {
           this.reset(providerName);
         } else {
@@ -85,7 +90,8 @@ export class CircuitBreaker {
         }
       }
     } else {
-      const successPercentage = (providerState.successCount / providerState.attemptCount) * 100;
+      const successPercentage =
+        (providerState.successCount / providerState.attemptCount) * 100;
       if (successPercentage >= this.successThresholdPercentage) {
         this.reset(providerName);
       }
@@ -96,14 +102,18 @@ export class CircuitBreaker {
   }
 
   private onFailure(providerName: string) {
-    const providerState = this.state.get(providerName) || this.createInitialState();
+    const providerState =
+      this.state.get(providerName) || this.createInitialState();
     providerState.failureCount++;
     providerState.attemptCount++;
 
     if (providerState.state === 'half-open') {
       providerState.halfOpenRequestCount++;
-      if (providerState.halfOpenRequestCount >= providerState.maxHalfOpenRequests) {
-        const failurePercentage = (providerState.failureCount / providerState.attemptCount) * 100;
+      if (
+        providerState.halfOpenRequestCount >= providerState.maxHalfOpenRequests
+      ) {
+        const failurePercentage =
+          (providerState.failureCount / providerState.attemptCount) * 100;
         if (failurePercentage >= this.failureThresholdPercentage) {
           this.open(providerName);
         } else {
@@ -111,7 +121,8 @@ export class CircuitBreaker {
         }
       }
     } else {
-      const failurePercentage = (providerState.failureCount / providerState.attemptCount) * 100;
+      const failurePercentage =
+        (providerState.failureCount / providerState.attemptCount) * 100;
       if (failurePercentage >= this.failureThresholdPercentage) {
         this.open(providerName);
       }
@@ -125,7 +136,8 @@ export class CircuitBreaker {
     providerName: string,
     action: () => Promise<void>,
   ): Promise<void> {
-    const providerState = this.state.get(providerName) || this.createInitialState();
+    const providerState =
+      this.state.get(providerName) || this.createInitialState();
 
     if (providerState.state === 'open') {
       const lastFailureTime = Date.now() - (providerState.lastFailureTime || 0);
@@ -156,4 +168,3 @@ export class CircuitBreaker {
     };
   }
 }
-

@@ -1,5 +1,4 @@
-import { NextFunction } from '@siddiqus/expressive';
-import express, { Request, Response, Express } from 'express';
+import express, { Request, Response, Express, NextFunction } from 'express';
 import dotenv from 'dotenv';
 
 dotenv.config();

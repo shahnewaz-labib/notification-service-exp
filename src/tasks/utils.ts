@@ -10,7 +10,7 @@ const circuitBreaker = new CircuitBreaker({
   failureThresholdPercentage: 80,
   successThresholdPercentage: 60,
   halfOpenThresholdPercentage: 50,
-  halfOpenTimeout: 5000
+  halfOpenTimeout: 5000,
 });
 
 export async function processTask(task: Task) {
