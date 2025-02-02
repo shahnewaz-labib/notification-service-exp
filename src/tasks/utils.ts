@@ -19,7 +19,7 @@ export async function processTask(task: Task) {
   for (const [index, provider] of providers.entries()) {
     try {
       await circuitBreaker.fire(provider.name, () =>
-        provider.consume(task.data)
+        provider.consume(task.data),
       );
       return;
     } catch (error) {
