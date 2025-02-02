@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { Provider } from '../../types/provider';
+import { providerConfig } from '../../config';
 
 export const smsProviderC: Provider = {
-  key: 'sms-provider-c',
-  url: 'http://localhost:8073/api/sms/provider3',
-  name: 'Provider C',
+  key: providerConfig.sms.providerC.key,
+  url: providerConfig.sms.providerC.url,
+  name: providerConfig.sms.providerC.name,
   consume: async (data: any) => {
     console.log(`Provider C: ${data}`);
 
