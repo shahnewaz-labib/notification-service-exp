@@ -1,10 +1,10 @@
-import { getShuffledProviders } from '../utils';
 import { taskProcessingQueue, taskQueue } from './taskQueue';
 import { deadLetterProcessingQueue, deadLetterQueue } from './deadLetterQueue';
 import { Task } from '../types/task';
 import { queueConfig } from '../config';
 import { Provider } from '../types/provider';
 import { CircuitBreaker } from '../utils/circuitBreaker';
+import { getProviders } from '../utils';
 
 const circuitBreaker = new CircuitBreaker({
   failureThresholdPercentage: 80,
@@ -14,9 +14,9 @@ const circuitBreaker = new CircuitBreaker({
 });
 
 export async function processTask(task: Task) {
-  const shuffledProviders: Provider[] = getShuffledProviders(task.type);
+  const providers: Provider[] = await getProviders(task.type);
 
-  for (const [index, provider] of shuffledProviders.entries()) {
+  for (const [index, provider] of providers.entries()) {
     try {
       await circuitBreaker.fire(provider.name, () =>
         provider.consume(task.data),
@@ -27,7 +27,7 @@ export async function processTask(task: Task) {
         `Failed to process task ${task.id} with provider ${provider.name}`,
       );
 
-      if (index === shuffledProviders.length - 1) {
+      if (index === providers.length - 1) {
         console.error('All providers failed, moving task to dead letter queue');
         deadLetterQueue.push(task);
       }
@@ -36,9 +36,9 @@ export async function processTask(task: Task) {
 }
 
 export async function dlqProcessTask(task: Task) {
-  const shuffledProviders: Provider[] = getShuffledProviders(task.type);
+  const providers: Provider[] = await getProviders(task.type);
 
-  for (const [index, provider] of shuffledProviders.entries()) {
+  for (const [index, provider] of providers.entries()) {
     try {
       await circuitBreaker.fire(provider.name, () =>
         provider.consume(task.data),
@@ -49,7 +49,7 @@ export async function dlqProcessTask(task: Task) {
         `[DLQ] Failed to process task ${task.id} with provider ${provider.name}`,
       );
 
-      if (index === shuffledProviders.length - 1) {
+      if (index === providers.length - 1) {
         console.error(
           '[DLQ] All providers failed, moving task to dead letter queue',
         );

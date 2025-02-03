@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { Provider } from '../../types/provider';
+import { providerConfig } from '../../config';
 
-export const providerB: Provider = {
-  url: 'http://localhost:8092/api/email/provider2',
+export const emailProviderB: Provider = {
+  key: providerConfig.email.providerB.key,
+  url: providerConfig.email.providerB.url,
   name: 'Provider B',
   consume: async (data: any) => {
     console.log(`Provider B: ${data}`);
 
-    await axios.post(providerB.url, data);
+    await axios.post(emailProviderB.url, data);
   },
 };
