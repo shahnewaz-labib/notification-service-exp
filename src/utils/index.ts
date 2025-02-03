@@ -17,15 +17,7 @@ export async function getProviders(type: 'sms' | 'email'): Promise<Provider[]> {
 }
 
 async function getProviderPriorities(type: 'sms' | 'email') {
-  if (type === 'sms') {
-    return getSmsProviderPriorities();
-  }
-
-  return getEmailProviderPriorities();
-}
-
-async function getSmsProviderPriorities() {
-  return [
+  const providerPriorities = [
     {
       id: 1,
       provider_type: 'sms',
@@ -47,11 +39,6 @@ async function getSmsProviderPriorities() {
       provider_key: 'sms-provider-c',
       priority: 3,
     },
-  ];
-}
-
-async function getEmailProviderPriorities() {
-  return [
     {
       id: 1,
       provider_type: 'email',
@@ -74,4 +61,8 @@ async function getEmailProviderPriorities() {
       priority: 3,
     },
   ];
+
+  return providerPriorities.filter(
+    (provider) => provider.provider_type === type,
+  );
 }
